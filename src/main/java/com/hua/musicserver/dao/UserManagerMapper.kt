@@ -1,7 +1,6 @@
 package com.hua.musicserver.dao
 
 import com.hua.musicserver.bean.UserBean
-import org.apache.commons.mail.Email
 import org.apache.ibatis.annotations.*
 import org.springframework.stereotype.Repository
 
@@ -28,5 +27,8 @@ interface UserManagerMapper {
 
     @Select("select * from user where email = #{email}")
     fun selectUserByEmail(@Param("email") email :String):UserBean?
+
+    @Select("select id from user where email = #{email}")
+    fun selectIdByEmail(@Param("email")email: String):Int
 
 }

@@ -15,8 +15,10 @@ class UserController {
 
     @Autowired
     lateinit var userManagerMapper: UserManagerMapper
-    private val emailCode = HashMap<String, Int>()
-    private val codeTime = HashMap<String, Long>()
+    private val emailCodeRegister = HashMap<String, Int>()
+    private val emailCodeRegisterTime = HashMap<String, Long>()
+    private val emailCodeLogin = HashMap<String, Int>()
+    private val emailCodeLoginTime = HashMap<String, Long>()
 
     //注册用户
     @RequestMapping("/register")
@@ -26,53 +28,69 @@ class UserController {
         username: String,
         code: Int
     ): SaResult {
-        if (emailCode[email] == null) {
+        if (emailCodeRegister[email] == null) {
             return SaResult.error("该邮箱未申请验证码")
         }
-        if (System.currentTimeMillis() - codeTime[email]!! > 1000 * 60 * 5L) {
-           return SaResult.error("验证码已失效")
+        if (System.currentTimeMillis() - emailCodeRegisterTime[email]!! > 1000 * 60 * 5L) {
+            return SaResult.error("验证码已失效")
         }
         if (userManagerMapper.selectNameCount(username) != 0) {
             return SaResult.error("用户名已存在")
         }
-        return if (code == emailCode[email]) {
+        return if (code == emailCodeRegister[email]) {
             val userBean = UserBean(null, username, email, password)
             if (userManagerMapper.insertUser(userBean) == 1) {
-                emailCode.remove(email)
-                codeTime.remove(email)
+                emailCodeRegister.remove(email)
+                emailCodeRegisterTime.remove(email)
                 SaResult.ok("用户注册成功")
             } else {
                 SaResult.error("用户注册失败")
             }
         } else {
-            SaResult.error("验证码错误")
+            SaResult.error("验证码不匹配")
         }
     }
 
-
-    @RequestMapping("/emailCode")
+    @RequestMapping("/emailCode/register")
     fun insertUser(
         email: String
     ): SaResult {
         return if (userManagerMapper.selectEmailCount(email) > 0) {
             SaResult.error("邮箱已存在")
         } else {
-            val code = (100000..999999).random()
-            emailCode[email] = code
-            codeTime[email] = System.currentTimeMillis()
-            email.toEmail(code)
-            SaResult.ok("成功获取验证码")
+            sendEmail(emailCodeRegister, emailCodeRegisterTime, email)
         }
     }
 
-    //用户名用户，返回token
-    @RequestMapping("/name/login")
+//    //用户名用户，返回token
+//    @RequestMapping("/name/login")
+//    fun loginWithNameServer(
+//        username: String,
+//        password: String
+//    ): SaResult {
+//        val userBean = userManagerMapper.selectUser(username)
+//        return loginResult(userBean, password)
+//    }
+
+    //验证码登录
+    @RequestMapping("/code/login")
     fun loginWithNameServer(
-        username: String,
-        password: String
+        email: String,
+        code: Int
     ): SaResult {
-        val userBean = userManagerMapper.selectUser(username)
-        return loginResult(userBean, password)
+        if (emailCodeLogin[email] == null) {
+            return SaResult.error("该邮箱未申请验证码")
+        }
+        if (System.currentTimeMillis() - emailCodeLoginTime[email]!! > 1000 * 60 * 5L) {
+            return SaResult.error("验证码已失效")
+        }
+        return if (emailCodeLogin[email] == code) {
+            val id = userManagerMapper.selectIdByEmail(email)
+            StpUtil.login(id)
+            SaResult.data(StpUtil.getTokenInfo().tokenValue)
+        } else {
+            SaResult.error("验证码不匹配")
+        }
     }
 
     //邮箱登录，返回token
@@ -135,8 +153,39 @@ class UserController {
     @RequestMapping("/testToken")
     fun testToken(
         token: String
-    ):SaResult{
+    ): SaResult {
         val test = StpUtil.getLoginIdByToken(token)
-        return if(test == null) SaResult.error() else SaResult.ok()
+        return if (test == null) SaResult.error() else SaResult.ok()
+    }
+
+    @RequestMapping("/emailCode/login")
+    fun getEmailCodeWithLogin(
+        email: String
+    ): SaResult {
+        val result = userManagerMapper.selectEmailCount(email)
+        return if (result == 0) {
+            SaResult.error("该邮箱未注册")
+        } else {
+            sendEmail(emailCodeLogin, emailCodeLoginTime, email, true)
+        }
+    }
+
+    private fun sendEmail(
+        emailMap: HashMap<String, Int>,
+        emailTime: HashMap<String, Long>,
+        email: String,
+        login: Boolean = false
+    ): SaResult {
+        val code = (100000..999999).random()
+        emailMap[email] = code
+        emailTime[email] = System.currentTimeMillis()
+        return try {
+            email.toEmail(code, login)
+            SaResult.ok("成功获取验证码")
+        } catch (e: Throwable) {
+            emailMap.remove(email)
+            emailTime.remove(email)
+            SaResult.error("发送失败，请检验邮箱")
+        }
     }
 }
