@@ -4,12 +4,13 @@ data class UserBean(
     var id :Int?,
     var name: String,
     var email:String,
-    val passwd:String
+    var passwd:String,
+    var head:String?
 ){
-    constructor():this(0,"","","")
+    constructor():this(0,"","","",null)
 
     override fun toString(): String {
-        return "UserBean(id=$id, username='$name', email='$email', password='$passwd')"
+        return "UserBean(id=$id, username='$name', email='$email', password='$passwd,head='$head')"
     }
 
 }

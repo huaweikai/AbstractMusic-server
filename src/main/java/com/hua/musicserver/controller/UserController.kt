@@ -38,7 +38,7 @@ class UserController {
             return SaResult.error("用户名已存在")
         }
         return if (code == emailCodeRegister[email]) {
-            val userBean = UserBean(null, username, email, password)
+            val userBean = UserBean(null, username, email, password, null)
             if (userManagerMapper.insertUser(userBean) == 1) {
                 emailCodeRegister.remove(email)
                 emailCodeRegisterTime.remove(email)
@@ -104,7 +104,7 @@ class UserController {
     }
 
     //获取用户信息
-    @RequestMapping("/get")
+    @RequestMapping("/getInfo")
     fun getUser(
         token: String
     ): SaResult {
@@ -112,6 +112,26 @@ class UserController {
         val id = i.toString().toInt()
         val user = userManagerMapper.selectUserById(id)
         return SaResult.data(user)
+    }
+
+    //设置用户信息
+    @RequestMapping("/setInfo")
+    fun setUser(
+        token: String,
+        @RequestBody userBean: UserBean
+    ): SaResult {
+        val i = StpUtil.getLoginIdByToken(token) ?: return SaResult.error("无此token")
+        val id = i.toString().toInt()
+//        val user = userManagerMapper.selectUserById(id)
+        return if (userManagerMapper.updateUser(
+                userBean.copy(id = id)
+//                id
+            ) == 1
+        ) {
+            SaResult.ok()
+        } else {
+            SaResult.error()
+        }
     }
 
     //退出信息
@@ -155,7 +175,7 @@ class UserController {
         token: String
     ): SaResult {
         val test = StpUtil.getLoginIdByToken(token)
-        return if (test == null) SaResult.error() else SaResult.ok()
+        return if (test == null) SaResult.error("登录失效，重新登录") else SaResult.ok()
     }
 
     @RequestMapping("/emailCode/login")
