@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select
 @Mapper
 interface AlbumManagerMapper {
 
-    @Select("select albumlist.*,artistlist.`name` as 'artistName' from albumList,artistlist where albumlist.artistId = artistlist.id")
+    @Select("select albumList.*,artistList.`name` as 'artistName' from albumList,artistList where albumList.artistId = artistList.id ORDER BY albumlist.time DESC")
     fun showAlbum():List<AlbumBean>
 
     @Select("select * from musicList where albumId = #{id}")

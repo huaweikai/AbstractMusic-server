@@ -9,7 +9,10 @@ import org.apache.ibatis.annotations.Select
 @Mapper
 interface MusicManagerMapper {
 
-    @Select("select * from musicList")
+    @Select("SELECT " +
+            "musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist " +
+            "FROM musicList,albumlist " +
+            "where musiclist.albumId = albumlist.id order by musiclist.createTime desc")
     fun getMusicList():List<MusicBean>
 
     @Select("SELECT * from musicList where `name` LIKE #{name}")

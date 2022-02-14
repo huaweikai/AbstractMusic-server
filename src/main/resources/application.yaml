@@ -3,7 +3,7 @@ spring:
 #    url: jdbc:mysql://localhost:3306/musicserver?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     url: jdbc:mysql://localhost:3306/abstractmusic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
-    password: 123
+    password: 1297720454
     driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis:
   type-aliases-package: com.hua.musicserver.bean
