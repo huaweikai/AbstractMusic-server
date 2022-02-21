@@ -1,6 +1,7 @@
 package com.hua.musicserver.dao
 
 import com.hua.musicserver.bean.AlbumBean
+import com.hua.musicserver.bean.MusicBean
 import com.hua.musicserver.bean.SheetBean
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
@@ -21,5 +22,12 @@ interface SheetManagerMapper {
         "select * from serversheet"
     )
     fun recommendList():List<SheetBean>
+
+    @Select(
+        "SELECT musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist " +
+                "FROM musicList,albumlist,sheettomusic where musiclist.albumId = albumlist.id " +
+                "and sheettomusic.sheetId = #{id} and sheettomusic.musicId = musiclist.id order by musiclist.createTime desc"
+    )
+    fun getRecommendList(id:String):List<MusicBean>
 
 }

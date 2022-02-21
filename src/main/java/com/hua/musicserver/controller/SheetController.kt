@@ -3,9 +3,7 @@ package com.hua.musicserver.controller
 import cn.dev33.satoken.util.SaResult
 import com.hua.musicserver.dao.SheetManagerMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,6 +25,13 @@ class SheetController {
         return SaResult.data(sheetManagerMapper.recommendList())
     }
 
+    @GetMapping("/recommend/{id}/list")
+    fun getRecommendList(
+        @PathVariable("id") id:String
+    ):SaResult{
+        return SaResult.data(sheetManagerMapper.getRecommendList(id))
+    }
+
     @GetMapping("/banner")
     fun getBanner():SaResult{
         val date = dateFormat.format(Date(System.currentTimeMillis()))
@@ -43,7 +48,6 @@ class SheetController {
             bannerMap[date] = list
             list
         }
-        println(listId)
         return SaResult.data(sheetManagerMapper.selectBanner(listId[0],listId[1],listId[2]))
     }
 }
