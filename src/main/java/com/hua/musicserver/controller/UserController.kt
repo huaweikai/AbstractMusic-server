@@ -122,11 +122,8 @@ class UserController {
     ): SaResult {
         val i = StpUtil.getLoginIdByToken(token) ?: return SaResult.error("无此token")
         val id = i.toString().toInt()
-//        val user = userManagerMapper.selectUserById(id)
         return if (userManagerMapper.updateUser(
-                userBean.copy(id = id)
-//                id
-            ) == 1
+                userBean.copy(id = id)) == 1
         ) {
             SaResult.ok()
         } else {

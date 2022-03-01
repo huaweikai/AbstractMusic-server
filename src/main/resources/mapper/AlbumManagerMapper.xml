@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper nameSpace="com.hua.musicserver.dao.AlbumManagerMapper">
+        <select id="showAlbum" resultType="AlbumBean">
+            select albumList.*,artistList.`name` as 'artistName' from albumList,artistList where albumlist.artistId = artistList.id ORDER BY albumlist.time DESC
+        </select>
+    <select id="selectMusicFromAlbum" resultType="MusicBean" parameterType="int">
+        SELECT musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist
+         FROM musicList,albumlist where musiclist.albumId = albumlist.id and albumlist.id= #{id} order by musiclist.createTime desc
+    </select>
+    <select id="selectAlbum" resultType="AlbumBean" parameterType="String">
+        SELECT * from albumList where `name` LIKE #{name}
+    </select>
+</mapper>

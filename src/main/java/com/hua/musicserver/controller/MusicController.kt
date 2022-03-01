@@ -1,9 +1,7 @@
 package com.hua.musicserver.controller
 
 import cn.dev33.satoken.util.SaResult
-import com.hua.musicserver.bean.MusicBean
 import com.hua.musicserver.dao.MusicManagerMapper
-import org.apache.ibatis.annotations.Param
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -33,4 +31,15 @@ class MusicController {
         }
     }
 
+    @RequestMapping("/{id}/lyrics")
+    fun selectLyrics(
+        @PathVariable id:String
+    ):SaResult{
+        val lyrics = managerMapper.selectLyrics(id)
+        return if(lyrics != null){
+            SaResult.data(lyrics)
+        }else{
+            SaResult.error()
+        }
+    }
 }
