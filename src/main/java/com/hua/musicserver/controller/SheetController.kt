@@ -71,7 +71,7 @@ class SheetController {
         token: String
     ): SaResult {
         val id = StpUtil.getLoginIdByToken(token) ?: return SaResult.error()
-        if(id != sheetManagerMapper.selectUserIdBySheetId(sheetId)) return SaResult.error("无权为这个歌单增加音乐")
+        if (id != sheetManagerMapper.selectUserIdBySheetId(sheetId)) return SaResult.error("无权为这个歌单增加音乐")
         val sheets = sheetManagerMapper.selectMusicIdBySheetId(sheetId)
         if (musicId in sheets) return SaResult.error("歌单中已存在该歌曲")
         return try {
@@ -144,7 +144,7 @@ class SheetController {
     fun updateSheet(
         token: String,
         @RequestBody sheetBean: SheetBean
-    ):SaResult{
+    ): SaResult {
         val id = StpUtil.getLoginIdByToken(token) ?: return SaResult.error()
         if (id.toString() != sheetManagerMapper.selectUserIdBySheetId(sheetBean.id.toString())) {
             return SaResult.error("无权修改该歌单")
@@ -152,9 +152,20 @@ class SheetController {
         return try {
             sheetManagerMapper.updateSheet(sheetBean)
             SaResult.ok()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             SaResult.error()
         }
     }
 
+
+    @GetMapping("{id}/detail")
+    fun selectSheetBySheetId(
+        @PathVariable("id") id: String
+    ): SaResult {
+        return try {
+            SaResult.data(sheetManagerMapper.selectSheetBySheetId(id))
+        }catch (e:Exception){
+            SaResult.error()
+        }
+    }
 }

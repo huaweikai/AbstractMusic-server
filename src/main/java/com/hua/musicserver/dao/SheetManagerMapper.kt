@@ -59,4 +59,7 @@ interface SheetManagerMapper {
     @Update("update sheet set title = #{title},artUri = #{artUri},sheetDesc= #{sheetDesc} where id = #{id}")
     fun updateSheet(sheetBean: SheetBean)
 
+    @Select("select * from sheet where id = #{sheetId}")
+    fun selectSheetBySheetId(sheetId: String):SheetBean
+
 }
