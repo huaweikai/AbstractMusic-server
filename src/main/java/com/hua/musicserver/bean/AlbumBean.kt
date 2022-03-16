@@ -8,6 +8,7 @@ data class AlbumBean(
     var name: String,
     var time: Date,
     var albumDesc: String,
+    var num:Int,
     var imgUrl: String,
     var artistName: String
 )

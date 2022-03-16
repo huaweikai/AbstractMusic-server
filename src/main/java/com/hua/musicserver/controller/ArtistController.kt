@@ -31,7 +31,6 @@ class ArtistController {
         return if (list.isEmpty()) {
             SaResult.error("该歌手没有专辑")
         } else {
-//            SaResult.get(200, "获取到${list.size}个专辑", list)
             SaResult.data(list)
         }
     }
@@ -51,14 +50,20 @@ class ArtistController {
 
     @GetMapping("/{name}")
     fun selectArtist(
-        @PathVariable name :String
-    ):SaResult{
+        @PathVariable name: String
+    ): SaResult {
         val data = artistManagerMapper.selectArtist(name)
-        return if(data.isEmpty()){
+        return if (data.isEmpty()) {
             SaResult.error()
-        }else{
+        } else {
             SaResult.data(data)
         }
     }
 
+    @GetMapping("/{musicId}/list")
+    fun selectArtistByMusicId(
+        @PathVariable musicId: String
+    ): SaResult {
+        return SaResult.data(artistManagerMapper.selectArtistIdByMusicId(musicId))
+    }
 }

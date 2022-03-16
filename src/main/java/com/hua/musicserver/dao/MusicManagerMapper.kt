@@ -1,6 +1,7 @@
 package com.hua.musicserver.dao
 
 import com.hua.musicserver.bean.MusicBean
+import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Param
 import org.apache.ibatis.annotations.Select
@@ -19,5 +20,8 @@ interface MusicManagerMapper {
 
     @Select("SELECT lyricslist.lyrics FROM `lyricslist` WHERE musicId = #{id}")
     fun selectLyrics(@Param("id")id :String):String?
+
+    @Insert("insert into `abstractmusic`.`musictoartist` ( `musicId`, `artistId`) VALUES (#{musicId},#{artistId})")
+    fun insertTest(musicId:String,artistId:String)
 
 }

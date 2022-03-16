@@ -42,4 +42,17 @@ class MusicController {
             SaResult.error()
         }
     }
+
+
+
+    @RequestMapping("/test1")
+    fun test(
+        start:Int,
+        end:Int,
+        artistId:String
+    ){
+        for(i in start..end){
+            managerMapper.insertTest(i.toString(),artistId)
+        }
+    }
 }
