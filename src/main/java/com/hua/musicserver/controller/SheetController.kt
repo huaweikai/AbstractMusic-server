@@ -140,7 +140,7 @@ class SheetController {
         }
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
     fun updateSheet(
         token: String,
         @RequestBody sheetBean: SheetBean
@@ -158,20 +158,25 @@ class SheetController {
     }
 
 
-    @GetMapping("{id}/detail")
+    @GetMapping("/{id}")
     fun selectSheetBySheetId(
         @PathVariable("id") id: String
     ): SaResult {
         return try {
-            SaResult.data(sheetManagerMapper.selectSheetBySheetId(id))
-        }catch (e:Exception){
+            val data = sheetManagerMapper.selectSheetBySheetId(id)
+            if (data == null) {
+                SaResult.error()
+            } else {
+                SaResult.data(data)
+            }
+        } catch (e: Exception) {
             SaResult.error()
         }
     }
 
     @GetMapping("/search/{name}")
     fun selectMusicByAlbumName(
-        @PathVariable name:String
+        @PathVariable name: String
     ): SaResult {
         val data = sheetManagerMapper.selectSheetByName("%$name%")
         return if (data.isEmpty()) {

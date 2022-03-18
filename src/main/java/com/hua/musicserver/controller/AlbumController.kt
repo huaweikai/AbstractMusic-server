@@ -40,5 +40,15 @@ class AlbumController {
         }
     }
 
-
+    @GetMapping("/{id}")
+    fun selectAlbumById(
+        @PathVariable id: String
+    ): SaResult {
+        val data = albumManagerMapper.selectAlbumById(id)
+        return if (data == null) {
+            SaResult.error()
+        } else {
+            SaResult.data(data)
+        }
+    }
 }

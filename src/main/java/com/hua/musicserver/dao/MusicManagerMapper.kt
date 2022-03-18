@@ -6,17 +6,16 @@ import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Param
 import org.apache.ibatis.annotations.Select
 
+const val musicBean = "musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist"
+
 @Mapper
 interface MusicManagerMapper {
 
-    @Select("SELECT " +
-            "musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist " +
-            "FROM musiclist,albumlist " +
+    @Select("SELECT $musicBean FROM musiclist,albumlist " +
             "where musiclist.albumId = albumlist.id order by musiclist.createTime desc")
     fun getMusicList():List<MusicBean>
 
-    @Select("SELECT musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist " +
-            "FROM musiclist,albumlist " +
+    @Select("SELECT $musicBean FROM musiclist,albumlist " +
             "where musiclist.albumId = albumlist.id and musiclist.`name` like #{name} order by musiclist.createTime desc")
     fun selectMusic(@Param("name") name:String):List<MusicBean>
 
@@ -26,4 +25,7 @@ interface MusicManagerMapper {
     @Insert("insert into `abstractmusic`.`musictoartist` ( `musicId`, `artistId`) VALUES (#{musicId},#{artistId})")
     fun insertTest(musicId:String,artistId:String)
 
+    @Select("SELECT $musicBean FROM musiclist,albumlist " +
+            "where musiclist.albumId = albumlist.id and musiclist.id = #{id} order by musiclist.createTime desc")
+    fun selectMusicById(id:String):MusicBean?
 }

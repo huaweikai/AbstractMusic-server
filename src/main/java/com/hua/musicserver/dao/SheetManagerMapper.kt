@@ -5,30 +5,31 @@ import com.hua.musicserver.bean.MusicBean
 import com.hua.musicserver.bean.SheetBean
 import org.apache.ibatis.annotations.*
 
+const val sheetBean = " sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num',(select `user`.`name` from `user` where sheet.userId=id) as 'author' "
+
 @Mapper
 interface SheetManagerMapper {
 
     @Select(
-        "select albumlist.*,artistlist.`name` as artistName,(select count(*) from musiclist where albumlist.id = musiclist.albumId) as 'num' FROM albumlist,artistlist " +
+        "select $albumBean FROM albumlist,artistlist " +
                 "WHERE (albumlist.id = #{id1} or albumlist.id =#{id2} or albumlist.id = #{id3}) " +
                 "and albumlist.artistId = artistlist.id"
     )
     fun selectBanner(id1: Int, id2: Int, id3: Int): List<AlbumBean>
 
     @Select(
-        "select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where userId = 0"
+        "select $sheetBean from sheet where userId = 0"
     )
     fun recommendList():List<SheetBean>
 
     @Select(
-        "SELECT musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist " +
-                "FROM musicList,albumlist,sheettomusic where musiclist.albumId = albumlist.id " +
+        "SELECT $musicBean FROM musicList,albumlist,sheettomusic where musiclist.albumId = albumlist.id " +
                 "and sheettomusic.sheetId = #{id} and sheettomusic.musicId = musiclist.id order by musiclist.createTime desc"
     )
     fun getMusicBySheetId(id:String):List<MusicBean>
 
 
-    @Select("select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where userId = #{userId}")
+    @Select("select $sheetBean from sheet where userId = #{userId}")
     fun getUserSheet(userId: String):List<SheetBean>
 
 
@@ -59,10 +60,10 @@ interface SheetManagerMapper {
     @Update("update sheet set title = #{title},artUri = #{artUri},sheetDesc= #{sheetDesc} where id = #{id}")
     fun updateSheet(sheetBean: SheetBean)
 
-    @Select("select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where id = #{sheetId}")
-    fun selectSheetBySheetId(sheetId: String):SheetBean
+    @Select("select $sheetBean from sheet where id = #{sheetId}")
+    fun selectSheetBySheetId(sheetId: String):SheetBean?
 
-    @Select("select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where title like #{name}")
+    @Select("select $sheetBean from sheet where title like #{name}")
     fun selectSheetByName(name:String):List<SheetBean>
 
 }

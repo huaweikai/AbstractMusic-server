@@ -66,4 +66,16 @@ class ArtistController {
     ): SaResult {
         return SaResult.data(artistManagerMapper.selectArtistIdByMusicId(musicId))
     }
+
+    @GetMapping("/{id}")
+    fun selectArtistById(
+        @PathVariable id: String
+    ): SaResult {
+        val data = artistManagerMapper.selectArtistById(id)
+        return if (data == null) {
+            SaResult.error()
+        } else {
+            SaResult.data(data)
+        }
+    }
 }

@@ -9,5 +9,6 @@ data class SheetBean(
     val title: String,
     val artUri: String? = null,
     val sheetDesc: String? = null,
-    val num:Int
+    val num:Int,
+    val author:String
 )
