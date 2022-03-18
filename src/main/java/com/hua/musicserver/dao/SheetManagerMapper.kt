@@ -9,14 +9,14 @@ import org.apache.ibatis.annotations.*
 interface SheetManagerMapper {
 
     @Select(
-        "select albumlist.*,artistlist.`name` as artistName FROM albumlist,artistlist " +
+        "select albumlist.*,artistlist.`name` as artistName,(select count(*) from musiclist where albumlist.id = musiclist.albumId) as 'num' FROM albumlist,artistlist " +
                 "WHERE (albumlist.id = #{id1} or albumlist.id =#{id2} or albumlist.id = #{id3}) " +
                 "and albumlist.artistId = artistlist.id"
     )
     fun selectBanner(id1: Int, id2: Int, id3: Int): List<AlbumBean>
 
     @Select(
-        "select * from sheet where userId = 0"
+        "select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where userId = 0"
     )
     fun recommendList():List<SheetBean>
 
@@ -28,7 +28,7 @@ interface SheetManagerMapper {
     fun getMusicBySheetId(id:String):List<MusicBean>
 
 
-    @Select("select * from sheet where userId = #{userId}")
+    @Select("select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where userId = #{userId}")
     fun getUserSheet(userId: String):List<SheetBean>
 
 
@@ -59,10 +59,10 @@ interface SheetManagerMapper {
     @Update("update sheet set title = #{title},artUri = #{artUri},sheetDesc= #{sheetDesc} where id = #{id}")
     fun updateSheet(sheetBean: SheetBean)
 
-    @Select("select * from sheet where id = #{sheetId}")
+    @Select("select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where id = #{sheetId}")
     fun selectSheetBySheetId(sheetId: String):SheetBean
 
-    @Select("select * from sheet where title like #{name}")
+    @Select("select sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num' from sheet where title like #{name}")
     fun selectSheetByName(name:String):List<SheetBean>
 
 }

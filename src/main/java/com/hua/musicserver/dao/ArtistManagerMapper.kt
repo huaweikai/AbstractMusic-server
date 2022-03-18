@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select
 @Mapper
 interface ArtistManagerMapper {
 
-    @Select("select * from artistList")
+    @Select("SELECT artistlist.*,(select count(*) from musictoartist where artistId = artistlist.id) as 'num' FROM `artistlist`")
     fun getArtistList():List<ArtistBean>
 
     @Select("select albumList.*,artistList.`name` as 'artistName' from albumList,artistList where albumlist.artistId = artistList.id and artistlist.id = #{id} ORDER BY albumlist.time DESC")
@@ -20,9 +20,9 @@ interface ArtistManagerMapper {
             "FROM musiclist,artistlist,musictoartist,albumlist WHERE albumlist.id = musiclist.albumId and musictoartist.artistId = artistlist.id and musictoartist.musicId = musiclist.id and artistlist.id = #{id}")
     fun selectMusicFromArtist(@Param("id")id: Int):List<MusicBean>
 
-    @Select("SELECT * from artistList where `name` LIKE #{name}")
+    @Select("SELECT artistlist.*,(select count(*) from musictoartist where artistId = artistlist.id) as 'num' from artistList where `name` LIKE #{name}")
     fun selectArtist(@Param("name") name:String):List<ArtistBean>
 
-    @Select("select artistlist.* from artistlist,musictoartist where artistlist.id = musictoartist.artistId and musictoartist.musicId = #{musicId} ")
+    @Select("select artistlist.*,(select count(*) from musictoartist where artistId = artistlist.id) as 'num' from artistlist,musictoartist where artistlist.id = musictoartist.artistId and musictoartist.musicId = #{musicId} ")
     fun selectArtistIdByMusicId(musicId:String):List<ArtistBean>
 }

@@ -11,7 +11,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface AlbumManagerMapper {
 
-    @Select("select albumList.*,artistList.`name` as 'artistName' from albumList,artistList where albumlist.artistId = artistList.id ORDER BY albumlist.time DESC")
+    @Select("select albumList.*,artistList.`name` as 'artistName',(select count(*) from musiclist where albumlist.id = musiclist.albumId) as 'num'" +
+            "from albumList,artistList where albumlist.artistId = artistList.id ORDER BY albumlist.time DESC")
     fun showAlbum():List<AlbumBean>
 
     @Select(
@@ -20,7 +21,8 @@ interface AlbumManagerMapper {
     )
     fun selectMusicFromAlbum(@Param("id")id :String):List<MusicBean>
 
-    @Select("SELECT * from albumList where `name` LIKE #{name}")
+    @Select("select albumList.*,artistList.`name` as 'artistName',(select count(*) from musiclist where albumlist.id = musiclist.albumId) as 'num'" +
+            "from albumList,artistList where albumlist.artistId = artistList.id and albumlist.`name` LIKE #{name} ORDER BY albumlist.time DESC")
     fun selectAlbum(@Param("name") name:String):List<AlbumBean>
 
 }
