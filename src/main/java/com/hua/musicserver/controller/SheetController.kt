@@ -168,4 +168,16 @@ class SheetController {
             SaResult.error()
         }
     }
+
+    @GetMapping("/search/{name}")
+    fun selectMusicByAlbumName(
+        @PathVariable name:String
+    ): SaResult {
+        val data = sheetManagerMapper.selectSheetByName("%$name%")
+        return if (data.isEmpty()) {
+            SaResult.error()
+        } else {
+            SaResult.data(data)
+        }
+    }
 }

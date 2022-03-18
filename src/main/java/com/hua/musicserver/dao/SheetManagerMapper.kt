@@ -62,4 +62,7 @@ interface SheetManagerMapper {
     @Select("select * from sheet where id = #{sheetId}")
     fun selectSheetBySheetId(sheetId: String):SheetBean
 
+    @Select("select * from sheet where title like #{name}")
+    fun selectSheetByName(name:String):List<SheetBean>
+
 }

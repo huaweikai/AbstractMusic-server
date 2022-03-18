@@ -15,7 +15,9 @@ interface MusicManagerMapper {
             "where musiclist.albumId = albumlist.id order by musiclist.createTime desc")
     fun getMusicList():List<MusicBean>
 
-    @Select("SELECT * from musicList where `name` LIKE #{name}")
+    @Select("SELECT musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,musiclist.musicUrl,musiclist.albumId,albumlist.`name` as albumName,artist " +
+            "FROM musiclist,albumlist " +
+            "where musiclist.albumId = albumlist.id and musiclist.`name` like #{name} order by musiclist.createTime desc")
     fun selectMusic(@Param("name") name:String):List<MusicBean>
 
     @Select("SELECT lyricslist.lyrics FROM `lyricslist` WHERE musicId = #{id}")

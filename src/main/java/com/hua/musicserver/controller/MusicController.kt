@@ -19,7 +19,7 @@ class MusicController {
         return SaResult.data(managerMapper.getMusicList())
     }
 
-    @RequestMapping("/{name}")
+    @RequestMapping("/search/{name}")
     fun selectMusic(
         @PathVariable name: String
     ): SaResult {

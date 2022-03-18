@@ -28,11 +28,11 @@ class AlbumController {
         return SaResult.data(albumManagerMapper.selectMusicFromAlbum(id))
     }
 
-    @GetMapping("/{name}")
-    fun selectMusicByAlbumName(
+    @GetMapping("/search/{name}")
+    fun selectAlbumByName(
         @PathVariable name: String
     ): SaResult {
-        val data = albumManagerMapper.selectAlbum(name)
+        val data = albumManagerMapper.selectAlbum("%$name%")
         return if (data.isEmpty()) {
             SaResult.error()
         } else {

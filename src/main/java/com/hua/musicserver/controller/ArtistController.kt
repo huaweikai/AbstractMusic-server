@@ -48,11 +48,11 @@ class ArtistController {
         }
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/search/{name}")
     fun selectArtist(
         @PathVariable name: String
     ): SaResult {
-        val data = artistManagerMapper.selectArtist(name)
+        val data = artistManagerMapper.selectArtist("%$name%")
         return if (data.isEmpty()) {
             SaResult.error()
         } else {
