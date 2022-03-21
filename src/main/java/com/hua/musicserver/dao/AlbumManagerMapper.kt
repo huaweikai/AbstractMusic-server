@@ -17,6 +17,10 @@ interface AlbumManagerMapper {
             "from albumList,artistList where albumlist.artistId = artistList.id ORDER BY albumlist.time DESC")
     fun showAlbum():List<AlbumBean>
 
+    @Select("select $albumBean" +
+            "from albumList,artistList where albumlist.artistId = artistList.id ORDER BY albumlist.time DESC limit 6")
+    fun showRecommendAlbum():List<AlbumBean>
+
     @Select(
         "SELECT $musicBean FROM musicList,albumlist where musiclist.albumId = albumlist.id and albumlist.id= #{id} order by musiclist.createTime desc"
     )

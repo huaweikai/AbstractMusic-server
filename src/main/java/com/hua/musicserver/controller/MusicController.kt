@@ -3,6 +3,7 @@ package com.hua.musicserver.controller
 import cn.dev33.satoken.util.SaResult
 import com.hua.musicserver.dao.MusicManagerMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -43,6 +44,21 @@ class MusicController {
         }
     }
 
+    @GetMapping("/{id}")
+    fun selectMusicById(
+        @PathVariable id: String
+    ):SaResult{
+        return try {
+            val result = managerMapper.selectMusicById(id)
+            if(result == null){
+                SaResult.error()
+            }else{
+                SaResult.data(result)
+            }
+        }catch (e:Exception){
+            SaResult.error()
+        }
+    }
 
 
     @RequestMapping("/test1")

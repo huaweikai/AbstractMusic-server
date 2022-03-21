@@ -19,7 +19,7 @@ import kotlin.random.Random
 @RequestMapping("/sheet")
 class SheetController {
 
-    private val bannerMap = HashMap<String, List<Int>>()
+    private val bannerMap = HashMap<String, Int>()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 
     @Autowired
@@ -27,7 +27,9 @@ class SheetController {
 
     @GetMapping("/recommend")
     fun recommendSheet(): SaResult {
-        return SaResult.data(sheetManagerMapper.recommendList())
+        val count = sheetManagerMapper.selectSheetNum()
+        val random = Random.nextInt(0,count-12)
+        return SaResult.data(sheetManagerMapper.recommendList(random,12))
     }
 
     @GetMapping("/{id}/list")
@@ -40,20 +42,15 @@ class SheetController {
     @GetMapping("/banner")
     fun getBanner(): SaResult {
         val date = dateFormat.format(Date(System.currentTimeMillis()))
-        val listId = if (bannerMap.containsKey(date)) {
+        val start = if (bannerMap.containsKey(date)) {
             bannerMap[date]!!
         } else {
-            val list = arrayListOf<Int>()
-            while (list.size < 3) {
-                val id = Random.nextInt(1, 9)
-                if (id !in list) {
-                    list.add(id)
-                }
-            }
-            bannerMap[date] = list
-            list
+            val count = sheetManagerMapper.selectAlbumCount()
+            val random = Random.nextInt(0,count-3)
+            bannerMap[date] = random
+            random
         }
-        return SaResult.data(sheetManagerMapper.selectBanner(listId[0], listId[1], listId[2]))
+        return SaResult.data(sheetManagerMapper.selectBanner(start,3))
     }
 
     @GetMapping("/userSheet")

@@ -11,16 +11,17 @@ const val sheetBean = " sheet.*,(select count(*) from sheettomusic where sheet.i
 interface SheetManagerMapper {
 
     @Select(
-        "select $albumBean FROM albumlist,artistlist " +
-                "WHERE (albumlist.id = #{id1} or albumlist.id =#{id2} or albumlist.id = #{id3}) " +
-                "and albumlist.artistId = artistlist.id"
+        "select $albumBean FROM albumlist,artistlist limit #{start},#{end}"
     )
-    fun selectBanner(id1: Int, id2: Int, id3: Int): List<AlbumBean>
+    fun selectBanner(start: Int,end: Int): List<AlbumBean>
+
+    @Select("select count(*) from albumlist")
+    fun selectAlbumCount():Int
 
     @Select(
-        "select $sheetBean from sheet where userId = 0"
+        "select $sheetBean from sheet LIMIT #{start},#{end}"
     )
-    fun recommendList():List<SheetBean>
+    fun recommendList(start:Int,end:Int):List<SheetBean>
 
     @Select(
         "SELECT $musicBean FROM musicList,albumlist,sheettomusic where musiclist.albumId = albumlist.id " +
@@ -65,5 +66,8 @@ interface SheetManagerMapper {
 
     @Select("select $sheetBean from sheet where title like #{name}")
     fun selectSheetByName(name:String):List<SheetBean>
+
+    @Select("select count(*) from sheet")
+    fun selectSheetNum():Int
 
 }

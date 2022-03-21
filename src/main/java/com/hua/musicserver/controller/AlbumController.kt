@@ -21,6 +21,11 @@ class AlbumController {
         return SaResult.data(albumManagerMapper.showAlbum())
     }
 
+    @GetMapping("/recommend/list")
+    fun recommendAlbumList(): SaResult {
+        return SaResult.data(albumManagerMapper.showRecommendAlbum())
+    }
+
     @GetMapping("/{id}/music")
     fun selectMusicFromAlbum(
         @PathVariable id: String
