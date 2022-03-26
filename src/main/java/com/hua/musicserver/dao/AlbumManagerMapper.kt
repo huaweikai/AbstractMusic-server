@@ -32,4 +32,7 @@ interface AlbumManagerMapper {
     @Select("select $albumBean from albumList,artistList where albumlist.artistId = artistList.id and albumlist.id = #{id}")
     fun selectAlbumById(@Param("id")id:String):AlbumBean?
 
+    @Select("select $albumBean from albumList,artistList,musiclist where albumlist.artistId = artistList.id and albumlist.id = musiclist.albumId and musiclist.id = #{id}")
+    fun selectAlbumByMusicId(@Param("id")id:String):AlbumBean?
+
 }

@@ -33,6 +33,14 @@ class AlbumController {
         return SaResult.data(albumManagerMapper.selectMusicFromAlbum(id))
     }
 
+//    @GetMapping("/{musicid}/")
+//    fun selectAlbumFromMusic(
+//        @PathVariable id: String
+//    ): SaResult {
+//        return SaResult.data(albumManagerMapper.selectMusicFromAlbum(id))
+//    }
+
+
     @GetMapping("/search/{name}")
     fun selectAlbumByName(
         @PathVariable name: String

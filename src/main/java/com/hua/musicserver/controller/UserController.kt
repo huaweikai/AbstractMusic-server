@@ -7,6 +7,7 @@ import com.hua.musicserver.dao.UserManagerMapper
 import com.hua.musicserver.other.toEmail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import java.sql.Date
 import kotlin.collections.HashMap
 
 @RestController
@@ -38,7 +39,7 @@ class UserController {
             return SaResult.error("用户名已存在")
         }
         return if (code == emailCodeRegister[email]) {
-            val userBean = UserBean(null, username, email, password, null)
+            val userBean = UserBean(0, username, email, password, null, Date(System.currentTimeMillis()))
             if (userManagerMapper.insertUser(userBean) == 1) {
                 emailCodeRegister.remove(email)
                 emailCodeRegisterTime.remove(email)
@@ -163,7 +164,7 @@ class UserController {
                 StpUtil.login(userBean.id)
                 SaResult.data(StpUtil.getTokenInfo().tokenValue)
             } else {
-                SaResult.error("登录失败,请重试")
+                SaResult.error("密码错误,请重试")
             }
         }
     }

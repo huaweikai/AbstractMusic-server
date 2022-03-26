@@ -5,13 +5,13 @@ import com.hua.musicserver.bean.MusicBean
 import com.hua.musicserver.bean.SheetBean
 import org.apache.ibatis.annotations.*
 
-const val sheetBean = " sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num',(select `user`.`name` from `user` where sheet.userId=id) as 'author' "
+const val sheetBean = "sheet.*,(select count(*) from sheettomusic where sheet.id = sheettomusic.sheetId) as 'num',(select `user`.`name` from `user` where sheet.userId=id) as 'author' "
 
 @Mapper
 interface SheetManagerMapper {
 
     @Select(
-        "select $albumBean FROM albumlist,artistlist limit #{start},#{end}"
+        "select $albumBean FROM albumlist,artistlist where albumlist.artistId = artistList.id limit #{start},#{end}"
     )
     fun selectBanner(start: Int,end: Int): List<AlbumBean>
 

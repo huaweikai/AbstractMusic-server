@@ -1,6 +1,7 @@
 package com.hua.musicserver.bean
 
 import com.hua.musicserver.noarg.NoArg
+import java.sql.Date
 
 @NoArg
 data class UserBean(
@@ -8,5 +9,6 @@ data class UserBean(
     var name: String,
     var email:String,
     var passwd:String,
-    var head:String?
+    var head:String?,
+    var createTime: Date
 )
