@@ -5,7 +5,7 @@ import java.sql.Date
 
 @NoArg
 data class UserBean(
-    var id :Int?,
+    var id:Int?,
     var name: String,
     var email:String,
     var passwd:String,

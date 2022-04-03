@@ -12,8 +12,11 @@ const val musicBean = "musiclist.id,musiclist.`name`,albumlist.imgUrl AS imgUrl,
 interface MusicManagerMapper {
 
     @Select("SELECT $musicBean FROM musiclist,albumlist " +
-            "where musiclist.albumId = albumlist.id order by musiclist.createTime desc")
-    fun getMusicList():List<MusicBean>
+            "where musiclist.albumId = albumlist.id limit #{start},6")
+    fun getMusicList(start:Int):List<MusicBean>
+
+    @Select("select count(*) from musiclist")
+    fun selectMusicCount():Int
 
     @Select("SELECT $musicBean FROM musiclist,albumlist " +
             "where musiclist.albumId = albumlist.id and musiclist.`name` like #{name} order by musiclist.createTime desc")

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import kotlin.random.Random
 
 @RestController
 @RequestMapping("/music")
@@ -17,7 +18,9 @@ class MusicController {
 
     @RequestMapping("/list")
     fun showMusicList(): SaResult {
-        return SaResult.data(managerMapper.getMusicList())
+        val count = managerMapper.selectMusicCount()
+        val random = Random.nextInt(count - 6)
+        return SaResult.data(managerMapper.getMusicList(random))
     }
 
     @RequestMapping("/search/{name}")

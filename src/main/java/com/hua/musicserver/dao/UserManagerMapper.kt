@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 @Mapper
 interface UserManagerMapper {
 
-    @Insert("insert into user (name,email,passwd,head) values(#{name},#{email},#{passwd},#{head})")
+    @Insert("insert into user (name,email,passwd,head,createTime) values(#{name},#{email},#{passwd},#{head},#{createTime})")
     fun insertUser(user: UserBean): Int
 
     @Select("select * from user where name = #{name}")
