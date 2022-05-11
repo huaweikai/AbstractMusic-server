@@ -3,6 +3,7 @@ package com.hua.musicserver.controller
 import cn.dev33.satoken.stp.StpUtil
 import cn.dev33.satoken.util.SaResult
 import com.hua.musicserver.bean.SheetBean
+import com.hua.musicserver.dao.MusicManagerMapper
 import com.hua.musicserver.dao.SheetManagerMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -24,6 +25,9 @@ class SheetController {
 
     @Autowired
     lateinit var sheetManagerMapper: SheetManagerMapper
+
+    @Autowired
+    lateinit var musicManagerMapper: MusicManagerMapper
 
     @GetMapping("/recommend")
     fun recommendSheet(): SaResult {
@@ -69,8 +73,10 @@ class SheetController {
     ): SaResult {
         val id = StpUtil.getLoginIdByToken(token) ?: return SaResult.error()
         if (id != sheetManagerMapper.selectUserIdBySheetId(sheetId)) return SaResult.error("无权为这个歌单增加音乐")
-        val sheets = sheetManagerMapper.selectMusicIdBySheetId(sheetId)
-        if (musicId in sheets) return SaResult.error("歌单中已存在该歌曲")
+        val musicLists = sheetManagerMapper.selectMusicIdBySheetId(sheetId)
+        val music = musicManagerMapper.selectMusicById(musicId)
+        val sheet = sheetManagerMapper.selectSheetBySheetId(sheetId)
+        if (musicId in musicLists) return SaResult.error("${music?.name} 已存在歌单 ${sheet?.title} 中")
         return try {
             if (sheetManagerMapper.insertUserSheet(sheetId, musicId) == 1) {
                 SaResult.ok("加入歌单成功")
@@ -176,10 +182,6 @@ class SheetController {
         @PathVariable name: String
     ): SaResult {
         val data = sheetManagerMapper.selectSheetByName("%$name%")
-        return if (data.isEmpty()) {
-            SaResult.error()
-        } else {
-            SaResult.data(data)
-        }
+        return SaResult.data(data)
     }
 }

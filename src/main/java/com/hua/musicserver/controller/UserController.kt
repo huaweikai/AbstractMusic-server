@@ -43,7 +43,7 @@ class UserController {
             if (userManagerMapper.insertUser(userBean) == 1) {
                 emailCodeRegister.remove(email)
                 emailCodeRegisterTime.remove(email)
-                SaResult.ok("用户注册成功")
+                SaResult.data("用户注册成功")
             } else {
                 SaResult.error("用户注册失败")
             }
@@ -141,7 +141,7 @@ class UserController {
         StpUtil.getLoginIdByToken(token)?.let {
             StpUtil.logout(it.toString().toInt())
         }
-        return SaResult.ok("退出成功")
+        return SaResult.data("退出成功")
     }
 
     //注销用户
@@ -149,11 +149,11 @@ class UserController {
     fun deleteUser(
         token: String
     ): SaResult {
-        StpUtil.getLoginIdByToken(token)?.let {
+        return StpUtil.getLoginIdByToken(token)?.let {
             StpUtil.logout(it.toString().toInt())
             userManagerMapper.deleteUser(it.toString().toInt())
-        }
-        return SaResult.ok("删除用户数据成功,感谢您的使用")
+            SaResult.ok("删除用户数据成功,感谢您的使用")
+        }?:SaResult.error("用户信息匹配失败")
     }
 
     private fun loginResult(userBean: UserBean?, password: String): SaResult {
@@ -200,7 +200,7 @@ class UserController {
         emailTime[email] = System.currentTimeMillis()
         return try {
             email.toEmail(code, login)
-            SaResult.ok("成功获取验证码")
+            SaResult.data("成功获取验证码")
         } catch (e: Throwable) {
             emailMap.remove(email)
             emailTime.remove(email)

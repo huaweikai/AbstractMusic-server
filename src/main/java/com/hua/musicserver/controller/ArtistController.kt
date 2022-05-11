@@ -53,11 +53,7 @@ class ArtistController {
         @PathVariable name: String
     ): SaResult {
         val data = artistManagerMapper.selectArtist("%$name%")
-        return if (data.isEmpty()) {
-            SaResult.error()
-        } else {
-            SaResult.data(data)
-        }
+        return SaResult.data(data)
     }
 
     @GetMapping("/{musicId}/list")

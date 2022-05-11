@@ -46,11 +46,7 @@ class AlbumController {
         @PathVariable name: String
     ): SaResult {
         val data = albumManagerMapper.selectAlbum("%$name%")
-        return if (data.isEmpty()) {
-            SaResult.error()
-        } else {
-            SaResult.data(data)
-        }
+        return SaResult.data(data)
     }
 
     @GetMapping("/{id}")

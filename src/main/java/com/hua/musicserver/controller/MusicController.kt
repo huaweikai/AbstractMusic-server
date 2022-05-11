@@ -27,12 +27,8 @@ class MusicController {
     fun selectMusic(
         @PathVariable name: String
     ): SaResult {
-        val list = managerMapper.selectMusic("%$name%")
-        return if (list.isEmpty()) {
-            SaResult.error()
-        } else {
-            SaResult.data(list)
-        }
+        val data = managerMapper.selectMusic("%$name%")
+        return SaResult.data(data)
     }
 
     @RequestMapping("/{id}/lyrics")
